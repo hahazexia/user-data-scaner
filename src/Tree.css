@@ -1,0 +1,13 @@
+.tree-item {
+    display: flex;
+    align-items: center;
+}
+.tree-item .icon {
+    margin-right: 10px;
+}
+.overstep {
+    color: red;
+}
+.tree-item .name {
+    margin-right: 10px;
+}
