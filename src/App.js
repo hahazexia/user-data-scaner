@@ -34,9 +34,6 @@ function App() {
         }
       });
       setData(data);
-      // timer = setInterval(() => {
-      //   ipcRenderer.send('folder-size', data.map(i => i.path));
-      // }, 5000);
     });
   }, []);
 
@@ -67,33 +64,44 @@ function App() {
     });
   }, [data]);
 
-  // useEffect(() => {
-  //   ipcRenderer.removeAllListeners('return-folder-size');
-  //   ipcRenderer.on('return-folder-size', (event, arg) => {
-  //     console.log(arg, 'arg');
-  //     if (Object.keys(arg).some(i => arg[i])) {
-  //       clearInterval(timer);
-  //       const res = data.map(i => {
-  //         if (arg[i.path]) {
-  //           const size = arg[i.path];
-  //           const gsize = size / 1024 / 1024 / 1024;
-  //           const msize = size / 1024 / 1024;
-  //           const ksize = size / 1024;
+  const folderOnClick = (arg) => {
+    if (!arg.isLeaf) {
+      ipcRenderer.invoke('get-folder-content', arg.path).then(res => {
+        if (!res) return;
+        console.log(res, 'get-folder-content res');
 
-  //           const result = gsize.toString().startsWith('0')
-  //             ? msize.toString().startsWith('0')
-  //               ? `${ksize.toFixed(2)} KB`
-  //               : `${msize.toFixed(2)} MB`
-  //             : `${gsize.toFixed(2)} GB`;
-  //           i.size = result;
-  //           i.overstep = size > threshold;
-  //         }
-  //         return i;
-  //       });
-  //       setData(res);
-  //     }
-  //   });
-  // }, [data]);
+        const hanledData = res.map((i, index) => {
+          let size;
+          if (i.notPermitted) {
+            size = 'not permitted';
+          } else {
+            size = i.gsize.toString().startsWith('0')
+              ? i.msize.toString().startsWith('0')
+                ? `${i.ksize.toFixed(2)} KB`
+                : `${i.msize.toFixed(2)} MB`
+              : `${i.gsize.toFixed(2)} GB`;
+          }
+          return {
+            path: i.path,
+            title: `${i.name}`,
+            key: `${arg.key}-${index}`,
+            isLeaf: i.isFile,
+            size: size,
+            overstep: i.size > threshold
+          }
+        });
+
+        const keyArr = arg.key.split('-');
+        keyArr.shift();
+        let findData = data;
+        for (let i = 0; i < keyArr.length; i++) {
+          findData = findData[keyArr[i]];
+        }
+        findData.children = hanledData;
+        setData(data);
+      });
+    }
+  };
 
   return (
     <div className="App">
@@ -107,7 +115,8 @@ function App() {
           defaultExpandAll
           treeData={data}
         /> */}
-        <MTree treeData={data}/>
+        <MTree treeData={data}
+        folderOnClick={folderOnClick}/>
       </div>
     </div>
   );

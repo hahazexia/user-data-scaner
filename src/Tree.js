@@ -4,6 +4,7 @@ import './Tree.css';
 
 function Tree(props) {
   const data = props.treeData;
+  const { folderOnClick } = props;
   if (!data) return <></>;
   const handledData = data.map(item => {
     return {
@@ -26,6 +27,7 @@ function Tree(props) {
               style={{ paddingLeft: (i.level - 1) * 20 + 'px' }}
               key={i.key}
               title={i.path}
+              onClick={() => folderOnClick(i)}
             >
               {i.isLeaf
                 ? <VscFile className="icon" />

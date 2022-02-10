@@ -1,4 +1,4 @@
-import { app, ipcMain } from 'electron';
+import { app } from 'electron';
 import path from 'path';
 import fs from 'fs';
 import { fork } from 'child_process';
@@ -6,6 +6,7 @@ import { fork } from 'child_process';
 const APP_DATA_PATH = path.join(app.getPath('home'), './AppData');
 const children = {};
 global.sizeMap = {};
+global.alreadyPath = {};
 
 function getAppDataInfo() {
   return new Promise((resolve, reject) => {
@@ -29,6 +30,7 @@ function childGetSize(p) {
     if (data.final) {
       children[data.path] && children[data.path].kill();
       delete children[data.path];
+      global.alreadyPath[data.path] = true;
     }
   });
   return child;
@@ -50,7 +52,11 @@ function getDirTree(dirPath, depth = 0) {
       }
 
       if (s.isDirectory()) {
-        children[p] = childGetSize(p);
+        if (global.sizeMap[p]) {
+          size = global.sizeMap[p];
+        } else {
+          children[p] = childGetSize(p);
+        }
       }
 
       filesData.push({

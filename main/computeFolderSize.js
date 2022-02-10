@@ -30,15 +30,14 @@ async function getFolderSize(folderPath) {
     // console.log('*'.repeat(100));
     // console.log(err, folderPath, 'getFolderSize err');
     // console.log('*'.repeat(100));
+    sizeMap[folderPath] = 'not permitted';
     return 0;
   }
 }
 
 function timerSend() {
   if (!timer) {
-    console.log('timer is init');
     timer = setTimeout(() => {
-      console.log('timer is invoke');
       process.send({
         sizeMap: {
           [target]: sizeMap[target]
