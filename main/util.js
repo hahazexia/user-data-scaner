@@ -35,12 +35,12 @@ function childGetSize(p) {
   return child;
 }
 
-function getDirTree(dirPath, depth = 0) {
+function getDirTree(dirPath) {
   try {
     const files = fs.readdirSync(dirPath);
-    // console.log(files, 'files');
 
     const filesData = [];
+    const foldersData = [];
     for (let i = 0; i < files.length; i++) {
       const p = path.join(dirPath, files[i]);
       const s = fs.statSync(p);
@@ -48,6 +48,16 @@ function getDirTree(dirPath, depth = 0) {
       let size = 0;
       if (s.isFile()) {
         size = s.size;
+        filesData.push({
+          name: files[i],
+          path: p,
+          size: size,
+          ksize: (size / 1024),
+          msize: (size / 1024 / 1024),
+          gsize: (size / 1024 / 1024 / 1024),
+          isDir: s.isDirectory(),
+          isFile: s.isFile(),
+        });
       }
 
       if (s.isDirectory()) {
@@ -56,28 +66,31 @@ function getDirTree(dirPath, depth = 0) {
         } else {
           children[p] = childGetSize(p);
         }
-      }
-
-      filesData.push({
-        name: files[i],
-        path: p,
-        size: size,
-        ksize: (size / 1024),
-        msize: (size / 1024 / 1024),
-        gsize: (size / 1024 / 1024 / 1024),
-        isDir: s.isDirectory(),
-        isFile: s.isFile(),
-      });
-    }
-
-    // console.log(filesData, 'filesData');
-    if (depth > 0) {
-      for (let i = 0; i < filesData.length; i++) {
-        filesData[i].children = getDirTree(filesData[i].path, depth - 1);
+        foldersData.push({
+          name: files[i],
+          path: p,
+          size: size,
+          ksize: (size / 1024),
+          msize: (size / 1024 / 1024),
+          gsize: (size / 1024 / 1024 / 1024),
+          isDir: s.isDirectory(),
+          isFile: s.isFile(),
+        });
       }
     }
 
-    return filesData.reverse();
+    filesData.sort((a, b) => {
+      if (a.name > b.name) return 1;
+      if (a.name < b.name) return -1;
+      return 0;
+    });
+    foldersData.sort((a, b) => {
+      if (a.name > b.name) return 1;
+      if (a.name < b.name) return -1;
+      return 0;
+    });
+
+    return [...foldersData, ...filesData];
   } catch(err) {
     console.log(err, 'getDirTree err');
     return [];

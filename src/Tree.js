@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 import { VscFile, VscFolder, VscFolderOpened } from "react-icons/vsc";
 import './Tree.css';
-import { ipcRenderer } from 'electron';
 
 function Tree(props) {
   const { folderOnClick, rightMenuClick, treeData: data } = props;

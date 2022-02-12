@@ -12,7 +12,6 @@ function registerIpcMainEvent() {
 
   ipcMain.on('open-explorer', (event, data) => {
     console.log(data, 'open-explorer');
-    // shell.openPath(data);
     shell.showItemInFolder(data);
   });
 
@@ -20,6 +19,7 @@ function registerIpcMainEvent() {
     console.log(folderPath, 'folderPath', global.alreadyPath);
     if (global.alreadyPath[folderPath] || Object.keys(global.alreadyPath).some(i => global.alreadyPath[i] && folderPath.startsWith(i))) {
       const filesData = [];
+      const foldersData = [];
       const files = await readdir(folderPath);
       for (const file of files) {
         const p = path.join(folderPath, file);
@@ -28,27 +28,48 @@ function registerIpcMainEvent() {
         let size = 0;
         if (stat.isFile()) {
           size = stat.size;
+          const notPermitted = size === 'not permitted';
+          filesData.push({
+            name: file,
+            path: p,
+            notPermitted: notPermitted,
+            size: !notPermitted && size,
+            ksize: !notPermitted && (size / 1024),
+            msize: !notPermitted && (size / 1024 / 1024),
+            gsize: !notPermitted && (size / 1024 / 1024 / 1024),
+            isDir: stat.isDirectory(),
+            isFile: stat.isFile(),
+          });
         }
   
         if (stat.isDirectory()) {
           size = global.sizeMap[p];
+          const notPermitted = size === 'not permitted';
+          foldersData.push({
+            name: file,
+            path: p,
+            notPermitted: notPermitted,
+            size: !notPermitted && size,
+            ksize: !notPermitted && (size / 1024),
+            msize: !notPermitted && (size / 1024 / 1024),
+            gsize: !notPermitted && (size / 1024 / 1024 / 1024),
+            isDir: stat.isDirectory(),
+            isFile: stat.isFile(),
+          });
         }
-
-        const notPermitted = size === 'not permitted';
-
-        filesData.push({
-          name: file,
-          path: p,
-          notPermitted: notPermitted,
-          size: !notPermitted && size,
-          ksize: !notPermitted && (size / 1024),
-          msize: !notPermitted && (size / 1024 / 1024),
-          gsize: !notPermitted && (size / 1024 / 1024 / 1024),
-          isDir: stat.isDirectory(),
-          isFile: stat.isFile(),
-        });
       }
-      return filesData;
+      
+      filesData.sort((a, b) => {
+        if (a.name > b.name) return 1;
+        if (a.name < b.name) return -1;
+        return 0;
+      });
+      foldersData.sort((a, b) => {
+        if (a.name > b.name) return 1;
+        if (a.name < b.name) return -1;
+        return 0;
+      });
+      return [...foldersData, ...filesData];
     } else {
       return null
     }
