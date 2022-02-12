@@ -10,3 +10,23 @@
 .data-box {
   margin-top: 20px;
 }
+
+.right-menu {
+  display: none;
+  z-index: 10;
+  position: absolute;
+  left: 10;
+  top: 10;
+  padding: 8px;
+  border-radius: 8px;
+  box-shadow: 0 3px 6px -4px #0000001f, 0 6px 16px #00000014, 0 9px 28px 8px #0000000d;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.right-menu:hover {
+  color: rgb(89, 92, 255);
+}
+.right-menu.show {
+  display: block;
+}

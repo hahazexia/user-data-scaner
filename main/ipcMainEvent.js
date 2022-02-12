@@ -12,12 +12,13 @@ function registerIpcMainEvent() {
 
   ipcMain.on('open-explorer', (event, data) => {
     console.log(data, 'open-explorer');
-    shell.openPath(data);
+    // shell.openPath(data);
+    shell.showItemInFolder(data);
   });
 
   ipcMain.handle('get-folder-content', async (event, folderPath) => {
     console.log(folderPath, 'folderPath', global.alreadyPath);
-    if (global.alreadyPath[folderPath]) {
+    if (global.alreadyPath[folderPath] || Object.keys(global.alreadyPath).some(i => global.alreadyPath[i] && folderPath.startsWith(i))) {
       const filesData = [];
       const files = await readdir(folderPath);
       for (const file of files) {

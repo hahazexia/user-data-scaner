@@ -21,7 +21,6 @@ function getAppDataInfo() {
 function childGetSize(p) {
   const child = fork(path.join(__dirname, './computeFolderSize.js'), [p]);
   child.on('message', (data) => {
-    console.log('main process receive data', data.sizeMap[data.path], Object.keys(data.sizeMap).length);
     global.sizeMap = Object.assign(global.sizeMap, data.sizeMap);
     global.mainWindow.webContents.send('folder-size', {
       [data.path]: global.sizeMap[data.path]

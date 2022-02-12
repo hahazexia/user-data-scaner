@@ -38,6 +38,7 @@ async function getFolderSize(folderPath) {
 function timerSend() {
   if (!timer) {
     timer = setTimeout(() => {
+      console.log(target, sizeMap[target]);
       process.send({
         sizeMap: {
           [target]: sizeMap[target]

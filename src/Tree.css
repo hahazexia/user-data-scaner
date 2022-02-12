@@ -1,6 +1,11 @@
 .tree-item {
     display: flex;
     align-items: center;
+    cursor: pointer;
+}
+.tree-item:hover {
+    color: rgb(89, 92, 255);
+    background-color:rgba(180, 180, 180, 0.205);
 }
 .tree-item .icon {
     margin-right: 10px;
@@ -10,4 +15,13 @@
 }
 .tree-item .name {
     margin-right: 10px;
+}
+.children {
+    display: none;
+}
+.children.show {
+    display: block;
+}
+.not-permitted {
+    text-decoration: line-through;
 }
