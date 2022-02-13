@@ -20,7 +20,7 @@
  // merge.smart({}, 
  module.exports = {
  // export default {
-   devtool: process.env.DEBUG_PROD === 'true' ? 'source-map' : 'none',
+   devtool: process.env.DEBUG_PROD === 'true' ? 'source-map' : 'hidden-source-map',
    mode: 'production',
    target: 'electron-main',
    entry: path.resolve(__dirname, '../main/index.js'),

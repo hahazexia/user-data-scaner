@@ -3,6 +3,9 @@ import path from 'path';
 import fs from 'fs';
 import { fork } from 'child_process';
 
+const CHILD_SCRIPT_PATH = process.env.NODE_ENV === 'production'
+                          ? path.join(__dirname, './computeFolderSize.js')
+                          : path.join(__dirname, '../public/computeFolderSize.js');
 const APP_DATA_PATH = path.join(app.getPath('home'), './AppData');
 const children = {};
 global.sizeMap = {};
@@ -19,7 +22,7 @@ function getAppDataInfo() {
 }
 
 function childGetSize(p) {
-  const child = fork(path.join(__dirname, './computeFolderSize.js'), [p]);
+  const child = fork(CHILD_SCRIPT_PATH, [p]);
   child.on('message', (data) => {
     global.sizeMap = Object.assign(global.sizeMap, data.sizeMap);
     global.mainWindow.webContents.send('folder-size', {
