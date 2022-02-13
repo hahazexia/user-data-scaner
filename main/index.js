@@ -18,7 +18,9 @@ function appInit () {
   global.mainWindow = mainWindow;
   mainWindow.loadURL(process.env.NODE_ENV === 'development' ? `http://localhost:${process.env.PORT}/index.html` : `file://${__dirname}/index.html`);
 
-  mainWindow.webContents.openDevTools();
+  if (process.env.NODE_ENV !== 'production') {
+    mainWindow.webContents.openDevTools();
+  }
   mainWindow.setMenu(null);
 }
 
