@@ -1,6 +1,7 @@
 * {
   padding: 0;
   margin: 0;
+  font-size: 14px;
 }
 
 .App {
@@ -12,13 +13,13 @@
 }
 
 .right-menu {
+  font-size: 12px;
   display: none;
   z-index: 10;
   position: absolute;
   left: 10;
   top: 10;
   padding: 8px;
-  border-radius: 8px;
   box-shadow: 0 3px 6px -4px #0000001f, 0 6px 16px #00000014, 0 9px 28px 8px #0000000d;
   background-color: #fff;
   cursor: pointer;

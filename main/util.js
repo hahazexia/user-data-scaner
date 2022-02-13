@@ -26,7 +26,8 @@ function childGetSize(p) {
   child.on('message', (data) => {
     global.sizeMap = Object.assign(global.sizeMap, data.sizeMap);
     global.mainWindow.webContents.send('folder-size', {
-      [data.path]: global.sizeMap[data.path]
+      [data.path]: global.sizeMap[data.path],
+      final: data.final
     });
 
     if (data.final) {
@@ -76,6 +77,7 @@ function getDirTree(dirPath) {
           ksize: (size / 1024),
           msize: (size / 1024 / 1024),
           gsize: (size / 1024 / 1024 / 1024),
+          final: !!global.sizeMap[p],
           isDir: s.isDirectory(),
           isFile: s.isFile(),
         });

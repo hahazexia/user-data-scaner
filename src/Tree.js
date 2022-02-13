@@ -1,6 +1,10 @@
 import classNames from 'classnames';
 import { VscFile, VscFolder, VscFolderOpened } from "react-icons/vsc";
+import { Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 import './Tree.css';
+
+const antIcon = <LoadingOutlined style={{ fontSize: 12 }} spin />
 
 function Tree(props) {
   const { folderOnClick, rightMenuClick, treeData: data } = props;
@@ -73,6 +77,9 @@ function Tree(props) {
                 {
                   !(i.size.startsWith('0.00') && i.size !== 'not permitted')
                   && <span>size: {i.size}</span>
+                }
+                {
+                  !i.isLeaf && !i.final && <Spin indicator={antIcon} />
                 }
               </div>
               {

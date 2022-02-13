@@ -46,6 +46,7 @@ function App() {
         const key = `0-${index}`;
         const level = key.split('-').length - 1
         return {
+          final: i.final,
           path: i.path,
           title: `${i.name}`,
           key: key,
@@ -77,6 +78,9 @@ function App() {
               : `${gsize.toFixed(2)} GB`;
             i.size = result;
             i.overstep = size > threshold;
+            if (arg.final) {
+              i.final = true;
+            }
           }
           return i;
         });

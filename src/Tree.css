@@ -25,3 +25,6 @@
 .not-permitted {
     text-decoration: line-through;
 }
+.tree-item .ant-spin {
+  margin-left: 10px;
+}
