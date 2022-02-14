@@ -159,7 +159,7 @@ function App() {
     <div className="App">
       <Button type="primary"
       onClick={() => ipcRenderer.send('open-explorer', path)}>
-        打开当前目录: {path}
+        open current directory: {path}
       </Button>
       
       <div className="data-box">
@@ -183,7 +183,7 @@ function App() {
       }}
       ref={rightMenuRef}
       >
-        在资源管理器中打开
+        reveal in explorer
       </div>
     </div>
   );
