@@ -15,3 +15,16 @@ finally i think about the AppData folder. AppData is a hidden folder located in 
 but if you want to find which folder or file is large in AppData folder, you have to manually check the folder properties. and there are thousands of files in it.
 
 this is why i create this tool.
+
+## develop
+
+```bash
+# local development
+npm run start
+
+# Build for ia32
+npm run pack:32
+
+# Build for x64
+npm run pack:64
+```
