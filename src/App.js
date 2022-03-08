@@ -5,6 +5,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Button } from 'antd';
 import MTree from './Tree';
 import classNames from 'classnames';
+import { computeSizeStr } from './util';
 
 function App() {
   const [path, setPath] = useState('');
@@ -40,11 +41,7 @@ function App() {
       setPath(res.path);
 
       const data = res.data.map((i, index) => {
-        const size = i.gsize.toString().startsWith('0')
-          ? i.msize.toString().startsWith('0')
-            ? `${i.ksize.toFixed(2)} KB`
-            : `${i.msize.toFixed(2)} MB`
-          : `${i.gsize.toFixed(2)} GB`;
+        const size = computeSizeStr(i);
 
         const key = `0-${index}`;
         const level = key.split('-').length - 1
@@ -71,18 +68,11 @@ function App() {
       if (Object.keys(arg).some(i => arg[i])) {
         const res = data.map(i => {
           if (arg[i.path]) {
-            const size = arg[i.path];
-            const gsize = size / 1024 / 1024 / 1024;
-            const msize = size / 1024 / 1024;
-            const ksize = size / 1024;
+            const sizeObj = arg[i.path];
 
-            const result = gsize.toString().startsWith('0')
-              ? msize.toString().startsWith('0')
-                ? `${ksize.toFixed(2)} KB`
-                : `${msize.toFixed(2)} MB`
-              : `${gsize.toFixed(2)} GB`;
+            const result = computeSizeStr(sizeObj);
             i.size = result;
-            i.overstep = size > threshold;
+            i.overstep = sizeObj.size > threshold;
             if (arg.final) {
               i.final = true;
             }
@@ -102,14 +92,7 @@ function App() {
       if (arg.size === 'not permitted') return;
       // 如果是第二次点击，之前已经 ipc 通信获取过下一层数据了，直接显示
       if (arg.children) {
-        const keyArr = arg.key.split('-');
-        keyArr.shift();
-        // 从整个数据的最起始位置找到当前点击的文件夹的对应数据的位置，改变其 showChildren 属性
-        let findData = data;
-        for (let i = 0; i < keyArr.length; i++) {
-          findData = findData[keyArr[i]] || findData.children[keyArr[i]];
-        }
-        findData.showChildren = !findData.showChildren;
+        arg.showChildren = !arg.showChildren;
         const temp = [...data];
         setData(temp);
         return false;
@@ -124,11 +107,7 @@ function App() {
           if (i.notPermitted) {
             size = 'not permitted';
           } else {
-            size = i.gsize.toString().startsWith('0')
-              ? i.msize.toString().startsWith('0')
-                ? `${i.ksize.toFixed(2)} KB`
-                : `${i.msize.toFixed(2)} MB`
-              : `${i.gsize.toFixed(2)} GB`;
+            size = computeSizeStr(i);
           }
           return {
             path: i.path,
@@ -141,14 +120,8 @@ function App() {
           }
         });
 
-        const keyArr = arg.key.split('-');
-        keyArr.shift();
-        let findData = data;
-        for (let i = 0; i < keyArr.length; i++) {
-          findData = findData[keyArr[i]] || findData.children[keyArr[i]];
-        }
-        findData.children = hanledData;
-        findData.showChildren = true;
+        arg.children = hanledData;
+        arg.showChildren = true;
         const temp = [...data];
         setData(temp);
       });

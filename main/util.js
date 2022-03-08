@@ -29,9 +29,16 @@ function childGetSize(p) {
   child.on('message', (data) => {
     // 将所有文件夹的大小数据存入全局缓存
     global.sizeMap = Object.assign(global.sizeMap, data.sizeMap);
+    const tempSize = global.sizeMap[data.path];
+    const sizeObj = {
+      size: tempSize,
+      gsize: tempSize / 1024 / 1024 / 1024,
+      msize: tempSize / 1024 / 1024,
+      ksize: tempSize / 1024,
+    };
     // 主进程发送当前文件夹大小数据给渲染进程
     global.mainWindow.webContents.send('folder-size', {
-      [data.path]: global.sizeMap[data.path],
+      [data.path]: sizeObj,
       final: data.final
     });
 
